@@ -6,76 +6,74 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report, accuracy_score
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
-# Wczytanie danych
+# Load data
 df = pd.read_csv('../data/teams-stats-standard.csv')
 
-# Przygotowanie danych - oddzielamy cechy od zmiennej celu
+# Prepare data - separate features and target variable
 X = df.drop(columns=['Club', 'GVB'])
 y = df['GVB']
 
-# Skalowanie danych
+# Scale the data
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# Podział na zestaw treningowy i testowy
+# Train-test split
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.3, random_state=42)
 
-# Tworzenie modelu SVM
+# SVM model creation
 svm_model = SVC(kernel='linear')
 
-# Trening modelu
+# Train the model
 svm_model.fit(X_train, y_train)
 
-# Przewidywanie na zestawie testowym
+# Predict on test set
 y_pred = svm_model.predict(X_test)
 
-# Ocena modelu
+# Model evaluation
 print("Dokładność modelu SVM:", accuracy_score(y_test, y_pred))
 print("Raport klasyfikacji:\n", classification_report(y_test, y_pred))
 
-# Wykres: Macierz pomyłek
-from sklearn.metrics import confusion_matrix
+# Confusion matrix plot
 cm = confusion_matrix(y_test, y_pred)
-
-plt.figure(figsize=(8, 6))
+plt.figure(figsize=(12, 8))  # Increased width
 sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=["Bad", "Good"], yticklabels=["Bad", "Good"])
 plt.xlabel('Predicted')
 plt.ylabel('True')
 plt.title('Confusion Matrix')
 plt.show()
 
-# Wykres: Wyświetlanie wyników klasyfikacji SVM w przestrzeni 2D (przy użyciu PCA)
+# SVM in 2D space using PCA
 pca = PCA(n_components=2)
 X_pca = pca.fit_transform(X_scaled)
 
-# Trenowanie modelu SVM na dwóch pierwszych komponentach PCA
+# Train SVM on two PCA components
 svm_model_pca = SVC(kernel='linear')
 svm_model_pca.fit(X_pca[:len(X_train)], y_train)
 
-# Predykcje na zestawie testowym
+# Predictions on the test set
 y_pred_pca = svm_model_pca.predict(X_pca[len(X_train):])
 
-# Wizualizacja przestrzeni 2D
-plt.figure(figsize=(8, 6))
+# Visualization in 2D space
+plt.figure(figsize=(12, 8))  # Increased width
 sns.scatterplot(x=X_pca[:, 0], y=X_pca[:, 1], hue=y, palette='coolwarm', style=y, s=100, alpha=0.7)
 plt.title("SVM Decision Boundary in 2D Space (PCA)")
 plt.xlabel('PCA Component 1')
 plt.ylabel('PCA Component 2')
 plt.show()
 
-# Dodatkowy wykres: Rozkład cech w stosunku do etykiet GVB
+# Feature distribution plot
 sns.pairplot(df, hue="GVB", vars=['IntReputation', 'Age', 'SkillMoves', 'Crossing', 'Finishing', 'HeadingAccuracy'])
 plt.show()
 
-# Wykres: Koeficjenty modelu SVM (jeśli kernel='linear')
+# SVM coefficients plot (for linear kernel)
 coefficients = svm_model.coef_.flatten()
 features = X.columns
 
-plt.figure(figsize=(10, 6))
+plt.figure(figsize=(14, 8))  # Increased width for better readability
 plt.bar(features, coefficients)
 plt.title("SVM Model Coefficients (Linear Kernel)")
 plt.xlabel("Features")
