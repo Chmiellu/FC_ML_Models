@@ -57,8 +57,7 @@ svm_model_pca.fit(X_pca[:len(X_train)], y_train)
 # Predictions on the test set
 y_pred_pca = svm_model_pca.predict(X_pca[len(X_train):])
 
-# Visualization in 2D space
-plt.figure(figsize=(12, 8))  # Increased width
+plt.figure(figsize=(12, 8))
 sns.scatterplot(x=X_pca[:, 0], y=X_pca[:, 1], hue=y, palette='coolwarm', style=y, s=100, alpha=0.7)
 plt.title("SVM Decision Boundary in 2D Space (PCA)")
 plt.xlabel('PCA Component 1')
