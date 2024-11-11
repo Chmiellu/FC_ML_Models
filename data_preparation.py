@@ -3,7 +3,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import SMOTE
 
-# Wczytanie danych
 df = pd.read_csv('data/teams-stats.csv')
 
 
@@ -14,11 +13,8 @@ else:
     print("Brakujące wartości:\n", missing_values)
 
 
-# Analiza balansu klasy GVB
 class_balance = df['GVB'].value_counts()
 print("Rozkład klasy docelowej GVB:\n", class_balance)
-
-# Nadpróbkowanie klasy mniejszościowej w razie potrzeby
 X = df.drop(columns=['Club', 'GVB'])
 y = df['GVB']
 smote = SMOTE(random_state=42)
