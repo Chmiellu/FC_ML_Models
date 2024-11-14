@@ -70,6 +70,19 @@ accuracies = [
     accuracy_score(y_test, voting_model.predict(X_test))
 ]
 
+y_pred_voting = voting_model.predict(X_test)
+
+# Obliczenie i wyświetlenie macierzy pomyłek
+cm_voting = confusion_matrix(y_test, y_pred_voting)
+plt.figure(figsize=(6, 4))
+sns.heatmap(cm_voting, annot=True, fmt="d", cmap="Blues", cbar=False)
+plt.title("Macierz pomyłek - Voting Classifier optymalizowany")
+plt.xlabel("Przewidywane etykiety")
+plt.ylabel("Rzeczywiste etykiety")
+plt.show()
+
+
+
 # Wykres dokładności
 plt.figure(figsize=(10, 6))
 sns.barplot(x=model_names, y=accuracies, palette="viridis")

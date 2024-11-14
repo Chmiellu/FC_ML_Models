@@ -54,7 +54,7 @@ plt.figure(figsize=(12, 8))  # Increased width
 sns.heatmap(cm_opt, annot=True, fmt="d", cmap="Blues", xticklabels=["Bad", "Good"], yticklabels=["Bad", "Good"])
 plt.xlabel('Predicted')
 plt.ylabel('True')
-plt.title('Confusion Matrix (Optimized SVM)')
+plt.title('Macierz pomyłek - SVM optymalizowany')
 plt.show()
 
 # SVM in 2D space using PCA
