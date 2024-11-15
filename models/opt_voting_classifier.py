@@ -8,12 +8,11 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Ładowanie i przygotowanie danych
+
 df = pd.read_csv('../data/teams-stats-standard.csv')
 X, y = df.drop(columns=['Club', 'GVB']), df['GVB']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-# Optymalizacja modeli bazowych
 # 1. Random Forest
 rf_params = {
     'n_estimators': [100, 200, 500],
@@ -47,7 +46,7 @@ knn_grid = GridSearchCV(KNeighborsClassifier(), knn_params, cv=5, n_jobs=-1, ver
 knn_grid.fit(X_train, y_train)
 knn_best = knn_grid.best_estimator_
 
-# Logistic Regression (bez optymalizacji)
+# Logistic Regression
 lr_best = LogisticRegression(max_iter=1000, random_state=42)
 lr_best.fit(X_train, y_train)
 
@@ -59,7 +58,7 @@ voting_model = VotingClassifier(
 )
 voting_model.fit(X_train, y_train)
 
-# Obliczanie dokładności dla każdego modelu
+# counting accuracies
 model_names = ["Random Forest", "Gradient Boosting", "SVM", "kNN", "Logistic Regression", "Voting Classifier"]
 accuracies = [
     accuracy_score(y_test, rf_best.predict(X_test)),
@@ -72,7 +71,6 @@ accuracies = [
 
 y_pred_voting = voting_model.predict(X_test)
 
-# Obliczenie i wyświetlenie macierzy pomyłek
 cm_voting = confusion_matrix(y_test, y_pred_voting)
 plt.figure(figsize=(6, 4))
 sns.heatmap(cm_voting, annot=True, fmt="d", cmap="Blues", cbar=False)
@@ -82,18 +80,16 @@ plt.ylabel("Rzeczywiste etykiety")
 plt.show()
 
 
-
-# Wykres dokładności
 plt.figure(figsize=(10, 6))
 sns.barplot(x=model_names, y=accuracies, palette="viridis")
 plt.xlabel("Model")
 plt.ylabel("Dokładność")
 plt.title("Porównanie dokładności modeli")
 plt.xticks(rotation=45)
-plt.ylim(0.8, 1)  # Skala zaczyna się od 0.8 dla lepszej wizualizacji różnic
+plt.ylim(0.8, 1)
 plt.tight_layout()
 plt.show()
 
-# Wyświetlenie dokładności i klasyfikacji w konsoli
+
 for name, accuracy in zip(model_names, accuracies):
     print(f"{name} - Dokładność: {accuracy:.4f}")

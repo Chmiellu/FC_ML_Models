@@ -10,27 +10,21 @@ from sklearn.metrics import classification_report, accuracy_score, confusion_mat
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
-# Load data
+
 df = pd.read_csv('../data/teams-stats-standard.csv')
 
-# Prepare data - separate features and target variable
 X = df.drop(columns=['Club', 'GVB'])
 y = df['GVB']
 
-# Scale the data
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# Train-test split
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.3, random_state=42)
 
-# SVM model creation
 svm_model = SVC(kernel='linear')
 
-# Train the model
 svm_model.fit(X_train, y_train)
 
-# Predict on test set
 y_pred = svm_model.predict(X_test)
 
 # Model evaluation
@@ -54,7 +48,7 @@ X_pca = pca.fit_transform(X_scaled)
 svm_model_pca = SVC(kernel='linear')
 svm_model_pca.fit(X_pca[:len(X_train)], y_train)
 
-# Predictions on the test set
+
 y_pred_pca = svm_model_pca.predict(X_pca[len(X_train):])
 
 plt.figure(figsize=(12, 8))
@@ -72,7 +66,7 @@ plt.show()
 coefficients = svm_model.coef_.flatten()
 features = X.columns
 
-plt.figure(figsize=(14, 8))  # Increased width for better readability
+plt.figure(figsize=(14, 8))
 plt.bar(features, coefficients)
 plt.title("SVM Model Coefficients (Linear Kernel)")
 plt.xlabel("Features")
